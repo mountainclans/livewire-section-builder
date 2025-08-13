@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace MountainClans\LivewireSectionBuilder\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LivewireSectionBuilderCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'livewire-section-builder';
 
     public $description = 'My command';
 
