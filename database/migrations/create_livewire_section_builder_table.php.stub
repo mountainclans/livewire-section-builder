@@ -8,11 +8,13 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('livewire_section_builder_table', function (Blueprint $table) {
-            $table->id();
-
-            // add fields
-
+        Schema::create('builder_sections', function (Blueprint $table) {
+            $table->ulid()->primary();
+            $table->string('sections_set')->index();
+            $table->string('page_id')->index();
+            $table->string('type')->index();
+            $table->smallInteger('order_column')->default(0);
+            $table->schemalessAttributes('fields');
             $table->timestamps();
         });
     }
