@@ -8,6 +8,8 @@
 composer require mountainclans/livewire-section-builder
 ```
 
+**Важно!** Пакет зависит от других компонентов, в частности, необходимо сразу после установки этого пакета также сконфигурировать для использования пакет [mountainclans/livewire-select](https://github.com/mountainclans/livewire-select) (инструкции находятся на его странице).
+
 Опубликуйте и примените миграции:
 
 ```bash
@@ -24,21 +26,29 @@ php artisan vendor:publish --tag="livewire-section-builder-config"
 Конфигурационный массив имеет следующую вложенность:
 ```php
 retyrn [
-    `<template_alias>` => [
-        `section_1_alias` => [
-            'key' => 'top_banner',
-            'title' => 'Top banner',
-            'model' => EloquentSectionModelClass::class,
-            'editor' => LivewireEditorComponent::class,
-            'view' => LivewireViewComponent::class,
+    'templates' => [
+        `<template_alias>` => [
+            `section_1_alias` => [
+                'key' => 'top_banner',
+                'title' => 'Top banner',
+                'model' => EloquentSectionModelClass::class,
+                'editor' => LivewireEditorComponent::class,
+                'frontend' => LivewireViewComponent::class,
+            ],
+            `section_1_alias` => [...]
         ],
-        `section_1_alias` => [...]
+        `<another_template_alias` => [...], 
     ],
-    `<another_template_alias` => [...],   
 ]
 ```
 
 ---
+
+Добавьте в tailwind.config.js в секцию content:
+
+```js
+'./vendor/mountainclans/livewire-section-builder/resources/views/**/*.blade.php'
+```
 
 Опционально, Вы можете опубликовать `views` для их переопределения:
 
