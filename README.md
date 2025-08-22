@@ -21,6 +21,25 @@ php artisan migrate
 php artisan vendor:publish --tag="livewire-section-builder-config"
 ```
 
+Конфигурационный массив имеет следующую вложенность:
+```php
+retyrn [
+    `<template_alias>` => [
+        `section_1_alias` => [
+            'key' => 'top_banner',
+            'title' => 'Top banner',
+            'model' => EloquentSectionModelClass::class,
+            'editor' => LivewireEditorComponent::class,
+            'view' => LivewireViewComponent::class,
+        ],
+        `section_1_alias` => [...]
+    ],
+    `<another_template_alias` => [...],   
+]
+```
+
+---
+
 Опционально, Вы можете опубликовать `views` для их переопределения:
 
 ```bash
