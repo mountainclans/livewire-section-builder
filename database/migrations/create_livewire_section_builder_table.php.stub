@@ -6,16 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('builder_sections', function (Blueprint $table) {
-            $table->ulid()->primary();
-            $table->string('sections_set')->index();
+            $table->ulid('id')->primary();
+            $table->string('template')->index();
             $table->string('page_id')->index();
             $table->string('type')->index();
             $table->smallInteger('order_column')->default(0);
             $table->schemalessAttributes('fields');
             $table->timestamps();
         });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('builder_sections');
     }
 };
