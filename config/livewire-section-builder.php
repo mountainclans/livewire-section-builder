@@ -1,21 +1,21 @@
 <?php
 
 return [
-    'sections_sets' => [
+    'templates' => [
 //        'main_page' => [
 //            [
 //                'key' => 'top_banner',
 //                'title' => 'Top banner',
 //                'model' => EloquentSectionModelClass::class,
 //                'editor' => LivewireEditorComponent::class,
-//                'view' => LivewireViewComponent::class,
+//                'frontend' => LivewireViewComponent::class,
 //            ],
 //            [
 //                'key' => 'advantages',
 //                'title' => 'Advantages',
 //                'model' => EloquentSectionModelClass::class,
 //                'editor' => LivewireEditorComponent::class,
-//                'view' => LivewireViewComponent::class,
+//                'frontend' => LivewireViewComponent::class,
 //            ]
 //        ],
 //        'site_rules' => [
