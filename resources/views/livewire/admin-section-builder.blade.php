@@ -132,13 +132,13 @@
     {{-- /Список секций и их редакторы --}}
 
     {{-- Добавление секции --}}
-    <div class="mt-7 mb-3 br-blue-300">
-        <h3 class="dark:text-white font-semibold mb-4">
-            {{ __('livewire-section-builder::interface.add_section') }}
-        </h3>
-    </div>
-
     @if (!empty ($availableSections))
+        <div class="mt-7 mb-3 br-blue-300">
+            <h3 class="dark:text-white font-semibold mb-4">
+                {{ __('livewire-section-builder::interface.add_section') }}
+            </h3>
+        </div>
+
         <form wire:submit="addSection"
               id="addSection"
               class="mt-5"
@@ -158,6 +158,10 @@
                 </div>
             </div>
         </form>
+    @else
+        <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-700 dark:text-yellow-300" role="alert">
+            {{ __('livewire-section-builder::interface.no_section_configured') }}
+        </div>
     @endif
     {{-- /Добавление секции --}}
 </div>

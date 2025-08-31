@@ -37,9 +37,6 @@ class AdminSectionBuilder extends Component
         $this->setSectionModels();
     }
 
-    /**
-     * @throws InvalidSectionTemplate
-     */
     private function setAvailableSections(): void
     {
         $templates = config('livewire-section-builder.templates');
@@ -51,7 +48,7 @@ class AdminSectionBuilder extends Component
             }
             $this->availableSections = $sections;
         } else {
-            throw new InvalidSectionTemplate('Please select the correct template or fill the config file.');
+            $this->availableSections = [];
         }
     }
 
