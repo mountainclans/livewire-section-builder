@@ -58,6 +58,19 @@ php artisan vendor:publish --tag="livewire-section-builder-views"
 
 ## Использование
 
+### События
+
+Вы можете расширить класс компонента `AdminSectionBuilder` и использовать собственный компонент в админке. В частности, Вы можете подписаться на одно из следующих событий:
+
+-  AdminSectionBuilder::EVENT_SECTION_ADDED
+-  AdminSectionBuilder::EVENT_SECTION_UPDATED
+-  AdminSectionBuilder::EVENT_SECTION_SORTED
+-  AdminSectionBuilder::EVENT_SECTION_HIDDEN
+-  AdminSectionBuilder::EVENT_SECTION_SHOWED
+-  AdminSectionBuilder::EVENT_SECTION_DELETED
+
+И реализовать, к примеру, отправку уведомлений пользователю.
+
 ## Авторы
 
 - [Vladimir Bajenov](https://github.com/mountainclans)

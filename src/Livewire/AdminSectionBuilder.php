@@ -4,12 +4,20 @@ namespace MountainClans\LivewireSectionBuilder\Livewire;
 
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use MountainClans\LivewireSectionBuilder\Exceptions\InvalidSectionTemplate;
 use MountainClans\LivewireSectionBuilder\Models\BuilderSection;
 
 class AdminSectionBuilder extends Component
 {
+    public const EVENT_SECTION_ADDED = 'section_builder_section_added';
+    public const EVENT_SECTION_UPDATED = 'section_builder_section_updated';
+    public const EVENT_SECTION_SORTED = 'section_builder_section_sorted';
+    public const EVENT_SECTION_HIDDEN = 'section_builder_section_hidden';
+    public const EVENT_SECTION_SHOWED = 'section_builder_section_showed';
+    public const EVENT_SECTION_DELETED = 'section_builder_section_deleted';
+
     public string $template;
     public string $pageId;
     public string $newSectionType = '';
@@ -60,18 +68,50 @@ class AdminSectionBuilder extends Component
 
     public function addSection(): void
     {
+        $lastOrder = BuilderSection::query()
+            ->where([
+                'template' => $this->template,
+                'page_id' => $this->pageId,
+            ])
+            ->max('order_column');
+
         BuilderSection::create([
             'type' =>  "{$this->template}_{$this->newSectionType}",
             'template' => $this->template,
             'page_id' => $this->pageId,
+            'order_column' => ++$lastOrder,
         ]);
 
         $this->setSectionModels();
+        $this->dispatch(self::EVENT_SECTION_ADDED);
     }
 
-    public function sortSections()
+    #[On(self::EVENT_SECTION_UPDATED)]
+    public function onSectionUpdate(): void
     {
-        // todo
+        $this->setSectionModels();
+    }
+
+    public function sortSections(string $sectionId, int $position): void
+    {
+        $currentOrder = $this->sectionModels
+            ->pluck('id')
+            ->toArray();
+
+        $currentIndex = array_search($sectionId, $currentOrder);
+        if ($currentIndex === false) {
+            return;
+        }
+
+        unset($currentOrder[$currentIndex]);
+
+        $currentOrder = array_values($currentOrder);
+        array_splice($currentOrder, $position, 0, $sectionId);
+
+        BuilderSection::setNewOrder($currentOrder);
+
+        $this->setSectionModels();
+        $this->dispatch(self::EVENT_SECTION_SORTED);
     }
 
     public function deleteSection(string $sectionId): void
@@ -81,6 +121,7 @@ class AdminSectionBuilder extends Component
         $section->delete();
 
         $this->setSectionModels();
+        $this->dispatch(self::EVENT_SECTION_DELETED);
     }
 
     public function render(): View

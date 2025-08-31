@@ -9,23 +9,44 @@
     </div>
 
     @if(!$sectionModels->isEmpty())
-        <div
-            {{--            x-sort="$wire.sortSections($item, $position)"--}}
-            class="mx-auto mb-12"
+        <div x-sort="$wire.sortSections($item, $position)"
+             class="mx-auto mb-12"
         >
             @foreach ($sectionModels as $sectionModel)
                 @php
                     /** !!! Важно обернуть разнородные компоненты в div с постоянным ключом !!! */
                     /** @var BuilderSection $section */
                 @endphp
-                {{-- TODO перетаскиватель - только маленькая иконка вместо блока --}}
 
                 <div x-sort:item="'{{ $sectionModel->id }}'"
                      wire:key="{{ $sectionModel->type . '-' . $sectionModel->id }}"
                      class="w-full border border-gray-300 dark:border-gray-600 border-2 rounded-lg p-4 mb-6"
                 >
                     <div class="flex justify-between">
-                        <div class="p-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400 flex-grow">
+                        {{-- Sort handler --}}
+                        <div x-sort:handle
+                             class="flex items-center me-4"
+                        >
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white flex-shrink-0 cursor-grab"
+                                 aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                            >
+                                <path stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="m8 15 4 4 4-4m0-6-4-4-4 4"
+                                ></path>
+                            </svg>
+                        </div>
+
+                        {{-- Section title --}}
+                        <div
+                            class="p-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400 flex-grow">
                             {{ $sectionModel->sectionTitle() }}
                         </div>
 
