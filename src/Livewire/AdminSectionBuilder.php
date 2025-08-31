@@ -60,19 +60,27 @@ class AdminSectionBuilder extends Component
 
     public function addSection(): void
     {
-        $newSection = BuilderSection::create([
+        BuilderSection::create([
             'type' =>  "{$this->template}_{$this->newSectionType}",
             'template' => $this->template,
             'page_id' => $this->pageId,
         ]);
-        $newSection = $newSection->refresh();
 
-        $this->sectionModels->add($newSection);
+        $this->setSectionModels();
     }
 
     public function sortSections()
     {
         // todo
+    }
+
+    public function deleteSection(string $sectionId): void
+    {
+        $section = BuilderSection::query()->withSubclasses()->findOrFail($sectionId);
+
+        $section->delete();
+
+        $this->setSectionModels();
     }
 
     public function render(): View

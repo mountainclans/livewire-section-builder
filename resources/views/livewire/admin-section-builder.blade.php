@@ -14,15 +14,43 @@
             class="mx-auto mb-12"
         >
             @foreach ($sectionModels as $sectionModel)
-                @php /** @var BuilderSection $section */ @endphp
-                {{-- !!! Важно обернуть разнородные компоненты в div с постоянным ключом !!! --}}
+                @php
+                    /** !!! Важно обернуть разнородные компоненты в div с постоянным ключом !!! */
+                    /** @var BuilderSection $section */
+                @endphp
                 {{-- TODO перетаскиватель - только маленькая иконка вместо блока --}}
+
                 <div x-sort:item="'{{ $sectionModel->id }}'"
                      wire:key="{{ $sectionModel->type . '-' . $sectionModel->id }}"
-                     class="key-wrapper"
+                     class="w-full border border-gray-300 dark:border-gray-600 border-2 rounded-lg p-4 mb-6"
                 >
-                    <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-600 dark:text-green-400">
-                        {{ $sectionModel->sectionTitle() }}
+                    <div class="flex justify-between">
+                        <div class="p-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400 flex-grow">
+                            {{ $sectionModel->sectionTitle() }}
+                        </div>
+
+                        {{-- Section actions --}}
+                        <div class="flex-grow-0 flex items-center ms-4">
+                            <button wire:click="deleteSection('{{ $sectionModel->id }}')"
+                                    wire:confirm="{{ __('livewire-section-builder::interface.sure_delete_this_section') }}"
+                            >
+                                <svg class="w-6 h-6 text-red-800 dark:text-red-600"
+                                     aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     width="24"
+                                     height="24"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                >
+                                    <path stroke="currentColor"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                     <livewire:is :component="$sectionModel->editorComponent()"
@@ -33,7 +61,8 @@
             @endforeach
         </div>
     @else
-        <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400" role="alert">
+        <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400"
+             role="alert">
             {{ __('livewire-section-builder::interface.sections_list_is_empty_yet') }}
         </div>
     @endif
