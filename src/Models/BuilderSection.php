@@ -29,11 +29,13 @@ class BuilderSection extends Model
         'page_id',
         'type',
         'order_column',
+        'is_visible',
         'fields',
     ];
 
     public $casts = [
         'fields' => SchemalessAttributes::class,
+        'is_visible' => 'boolean',
     ];
 
     public static function allowedTypes(): array

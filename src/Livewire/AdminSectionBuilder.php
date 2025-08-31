@@ -76,7 +76,7 @@ class AdminSectionBuilder extends Component
             ->max('order_column');
 
         BuilderSection::create([
-            'type' =>  "{$this->template}_{$this->newSectionType}",
+            'type' => "{$this->template}_{$this->newSectionType}",
             'template' => $this->template,
             'page_id' => $this->pageId,
             'order_column' => ++$lastOrder,
@@ -90,6 +90,23 @@ class AdminSectionBuilder extends Component
     public function onSectionUpdate(): void
     {
         $this->setSectionModels();
+    }
+
+    public function toggleSectionVisibility(string $sectionId): void
+    {
+        $section = BuilderSection::query()->withSubclasses()->findOrFail($sectionId);
+
+        $section->is_visible = !$section->is_visible;
+
+        $section->save();
+
+        $this->setSectionModels();
+
+        if ($section->is_visible) {
+            $this->dispatch(self::EVENT_SECTION_SHOWED);
+        } else {
+            $this->dispatch(self::EVENT_SECTION_HIDDEN);
+        }
     }
 
     public function sortSections(string $sectionId, int $position): void
