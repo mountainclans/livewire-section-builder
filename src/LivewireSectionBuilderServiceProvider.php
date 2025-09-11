@@ -4,6 +4,7 @@ namespace MountainClans\LivewireSectionBuilder;
 
 use Livewire\Livewire;
 use MountainClans\LivewireSectionBuilder\Livewire\AdminSectionBuilder;
+use MountainClans\LivewireSectionBuilder\Livewire\FrontendSectionViewer;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -22,5 +23,6 @@ class LivewireSectionBuilderServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         Livewire::component('admin-section-builder', AdminSectionBuilder::class);
+        Livewire::component('frontend-section-viewer', FrontendSectionViewer::class);
     }
 }
