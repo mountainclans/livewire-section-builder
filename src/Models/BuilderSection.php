@@ -43,9 +43,9 @@ class BuilderSection extends Model
         $config = config('livewire-section-builder.templates');
         $result = [];
 
-        foreach ($config as $template => $sections) {
+        foreach ($config as $sections) {
             foreach ($sections as $section) {
-                $result[$template . '_' . $section['key']] = $section['model'];
+                $result[$section['key']] = $section['model'];
             }
         }
 
@@ -64,10 +64,9 @@ class BuilderSection extends Model
     public function editorComponent(): string
     {
         $config = config('livewire-section-builder.templates');
-        $subtype = str_replace("{$this->template}_", '', $this->type);
 
         foreach ($config[$this->template] as $section) {
-            if ($section['key'] === $subtype) {
+            if ($section['key'] === $this->type) {
                 return $section['editor'];
             }
         }
@@ -81,10 +80,9 @@ class BuilderSection extends Model
     public function frontendComponent(): string
     {
         $config = config('livewire-section-builder.templates');
-        $subtype = str_replace("{$this->template}_", '', $this->type);
 
         foreach ($config[$this->template] as $section) {
-            if ($section['key'] === $subtype) {
+            if ($section['key'] === $this->type) {
                 return $section['frontend'];
             }
         }
