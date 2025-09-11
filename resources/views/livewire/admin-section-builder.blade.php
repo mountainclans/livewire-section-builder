@@ -1,6 +1,6 @@
 @use('MountainClans\LivewireSectionBuilder\Models\BuilderSection')
 
-<div class="w-full p-4 rounded-lg my-5 border border-gray-500 dark:border-gray-700">
+<div class="w-full p-4 rounded-lg my-5 border border-gray-500 dark:border-gray-700 mb-36">
     {{-- Список секций и их редакторы --}}
     <div class="mb-3">
         <h2 class="dark:text-white font-semibold mb-4">

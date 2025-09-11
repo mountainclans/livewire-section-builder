@@ -6,7 +6,6 @@ use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use MountainClans\LivewireSectionBuilder\Exceptions\InvalidSectionTemplate;
 use MountainClans\LivewireSectionBuilder\Models\BuilderSection;
 
 class AdminSectionBuilder extends Component
@@ -25,9 +24,6 @@ class AdminSectionBuilder extends Component
     public array $availableSections = [];
     public Collection $sectionModels;
 
-    /**
-     * @throws InvalidSectionTemplate
-     */
     public function mount(string $template, string $pageId): void
     {
         $this->template = $template;
