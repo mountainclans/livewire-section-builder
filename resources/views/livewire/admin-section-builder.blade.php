@@ -8,7 +8,7 @@
         </h2>
     </div>
 
-    @if(!$sectionModels->isEmpty())
+    @if(!empty($sectionModels))
         <div x-sort="$wire.sortSections($item, $position)"
              class="mx-auto mb-12"
         >

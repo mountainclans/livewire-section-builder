@@ -2,7 +2,6 @@
 
 namespace MountainClans\LivewireSectionBuilder\Livewire;
 
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -22,7 +21,7 @@ class AdminSectionBuilder extends Component
     public string $newSectionType = '';
 
     public array $availableSections = [];
-    public Collection $sectionModels;
+    public array $sectionModels = [];
 
     public function mount(string $template, string $pageId): void
     {
@@ -62,7 +61,8 @@ class AdminSectionBuilder extends Component
                 'page_id' => $this->pageId,
             ])
             ->orderBy('order_column')
-            ->get();
+            ->get()
+            ->all();
     }
 
     public function addSection(): void
