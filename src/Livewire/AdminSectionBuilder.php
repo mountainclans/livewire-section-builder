@@ -69,7 +69,7 @@ class AdminSectionBuilder extends Component
             ->max('order_column');
 
         BuilderSection::create([
-            'type' => "{$this->template}_{$this->newSectionType}",
+            'type' => $this->newSectionType,
             'template' => $this->template,
             'page_id' => $this->pageId,
             'order_column' => ++$lastOrder,
