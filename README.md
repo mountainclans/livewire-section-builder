@@ -93,7 +93,7 @@ php artisan vendor:publish --tag="livewire-section-builder-views"
 
 ```bladehtml
 @if ($pageId && !empty($destination))
-    <livewire:admin-section-builder :template="$destination" 
+    <livewire:admin-section-builder :template="BuilderPage::DESTINATION_HOME_PAGE" 
                                     :page-id="$pageId"
     />
 @endif
@@ -123,6 +123,16 @@ $this->dispatch(AdminSectionBuilder::EVENT_SECTION_UPDATED);
 -  AdminSectionBuilder::EVENT_SECTION_DELETED
 
 И реализовать, к примеру, отправку уведомлений пользователю.
+
+## View-компонент
+
+```bladehtml
+<livewire:frontend-section-viewer :page-id="$page->id"
+                                  :template="BuilderPage::DESTINATION_HOME_PAGE"
+/>
+```
+
+Данный компонент выведет все секции с нужным контентом и в нужном порядке.
 
 ## Авторы
 
