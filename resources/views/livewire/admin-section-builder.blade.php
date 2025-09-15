@@ -26,10 +26,10 @@
                      wire:key="{{ $sectionModel->type . '-' . $sectionModel->id }}"
                      class="w-full border border-gray-300 dark:border-gray-600 border-2 rounded-lg p-4 mb-6"
                 >
-                    <div class="flex justify-between">
+                    <div class="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-3">
                         {{-- Sort handler --}}
                         <div x-sort:handle
-                             class="flex items-center me-4"
+                             class="flex items-center"
                         >
                             <svg class="w-6 h-6 text-gray-800 dark:text-white flex-shrink-0 cursor-grab"
                                  aria-hidden="true"
@@ -55,10 +55,10 @@
                         </div>
 
                         {{-- Section actions --}}
-                        <div class="flex-grow-0 flex items-center ms-4">
+                        <div class="flex-grow-0 flex items-center gap-3">
                             {{-- Hide / show section --}}
                             <button wire:click="toggleSectionVisibility('{{ $sectionModel->id }}')"
-                                    class="w-6 h-6 ms-4"
+                                    class="w-6 h-6"
                             >
                                 @if ($sectionModel->is_visible)
                                     <svg class="w-6 h-6 text-gray-800 dark:text-white"
@@ -97,7 +97,7 @@
 
                             <button wire:click="deleteSection('{{ $sectionModel->id }}')"
                                     wire:confirm="{{ __('livewire-section-builder::interface.sure_delete_this_section') }}"
-                                    class="w-6 h-6 ms-4"
+                                    class="w-6 h-6"
                             >
                                 <svg class="w-6 h-6 text-red-800 dark:text-red-600"
                                      aria-hidden="true"
