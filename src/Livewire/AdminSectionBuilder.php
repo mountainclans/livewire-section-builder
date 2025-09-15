@@ -36,16 +36,22 @@ class AdminSectionBuilder extends Component
     private function setAvailableSections(): void
     {
         $templates = config('livewire-section-builder.templates');
+        $registeredSections = config('livewire-section-builder.sections');
+        $templateSections = array_key_exists($this->template, $templates) ? $templates[$this->template] : null;
 
-        if (array_key_exists($this->template, $templates)) {
-            $sections = [];
-            foreach ($templates[$this->template] as $sectionTemplate) {
-                $sections[$sectionTemplate['key']] = $sectionTemplate['title'];
-            }
-            $this->availableSections = $sections;
-        } else {
+        if (empty($templateSections)) {
             $this->availableSections = [];
+            return;
         }
+
+        $availableSections = [];
+        foreach ($registeredSections as $registeredSection) {
+            if (in_array($registeredSection['key'], $templateSections)) {
+                $availableSections[$registeredSection['key']] = $registeredSection['title'];
+            }
+        }
+
+        $this->availableSections = $availableSections;
     }
 
     private function setSectionModels(): void

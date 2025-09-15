@@ -25,11 +25,15 @@ class FrontendSectionViewer extends Component
 
     private function setSectionModels(): void
     {
+        $templates = config('livewire-section-builder.templates');
+        $availableSectionTemplates = array_key_exists($this->template, $templates) ? $templates[$this->template] : [];
+
         $this->sectionModels = BuilderSection::query()
             ->where([
                 'template' => $this->template,
                 'page_id' => $this->pageId,
             ])
+            ->whereIn('type', $availableSectionTemplates)
             ->orderBy('order_column')
             ->get();
     }

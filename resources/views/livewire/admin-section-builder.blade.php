@@ -16,6 +16,10 @@
                 @php
                     /** !!! Важно обернуть разнородные компоненты в div с постоянным ключом !!! */
                     /** @var BuilderSection $section */
+                    $editorComponent = $sectionModel->editorComponent();
+                    if (empty($editorComponent)){
+                        continue;
+                    }
                 @endphp
 
                 <div x-sort:item="'{{ $sectionModel->id }}'"
@@ -114,8 +118,8 @@
                         </div>
                     </div>
 
-                    @if ($sectionModel->is_visible)
-                        <livewire:is :component="$sectionModel->editorComponent()"
+                    @if ($sectionModel->is_visible && $editorComponent)
+                        <livewire:is :component="$editorComponent"
                                      :section="$sectionModel"
                                      wire:key="{{ $sectionModel->id }}"
                         />
@@ -159,7 +163,8 @@
             </div>
         </form>
     @else
-        <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-700 dark:text-yellow-300" role="alert">
+        <div class="p-4 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-700 dark:text-yellow-300"
+             role="alert">
             {{ __('livewire-section-builder::interface.no_section_configured') }}
         </div>
     @endif

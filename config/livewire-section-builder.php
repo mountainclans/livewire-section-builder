@@ -1,8 +1,7 @@
 <?php
 
 return [
-    'templates' => [
-//        'main_page' => [
+    'sections' => [
 //            [
 //                'key' => 'top_banner',
 //                'title' => 'Top banner',
@@ -17,9 +16,11 @@ return [
 //                'editor' => LivewireEditorComponent::class,
 //                'frontend' => LivewireViewComponent::class,
 //            ]
-//        ],
-//        'site_rules' => [
-//            //
-//        ],
+    ],
+    'templates' => [
+//        'main_page' => [
+//            'top_banner',
+//            'advantages',
+//        ]
     ],
 ];

@@ -5,9 +5,9 @@ namespace MountainClans\LivewireSectionBuilder\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use MountainClans\LaravelPolymorphicModel\Attributes\RequiresOverride;
 use MountainClans\LaravelPolymorphicModel\Traits\PolymorphicModel;
-use MountainClans\LivewireSectionBuilder\Exceptions\InvalidSectionTemplate;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\SchemalessAttributes\Casts\SchemalessAttributes;
 
@@ -40,16 +40,10 @@ class BuilderSection extends Model
 
     public static function allowedTypes(): array
     {
-        $config = config('livewire-section-builder.templates');
-        $result = [];
-
-        foreach ($config as $sections) {
-            foreach ($sections as $section) {
-                $result[$section['key']] = $section['model'];
-            }
-        }
-
-        return $result;
+        $registeredSections = config('livewire-section-builder.sections');
+        return Arr::mapWithKeys($registeredSections, function (array $item, int $key) {
+            return [$item['key'] => $item['model']];
+        });
     }
 
     #[RequiresOverride]
@@ -58,36 +52,40 @@ class BuilderSection extends Model
         return '';
     }
 
-    /**
-     * @throws InvalidSectionTemplate
-     */
-    public function editorComponent(): string
+    public function editorComponent(): ?string
     {
-        $config = config('livewire-section-builder.templates');
+        $registeredSections = config('livewire-section-builder.sections');
+        $templateSections = config('livewire-section-builder.templates');
 
-        foreach ($config[$this->template] as $section) {
-            if ($section['key'] === $this->type) {
-                return $section['editor'];
+        foreach ($templateSections[$this->template] as $sectionKey) {
+            if ($sectionKey === $this->type) {
+                $sections = Arr::mapWithKeys($registeredSections, function (array $item, int $key) {
+                    return [$item['key'] => $item];
+                });
+
+                return $sections[$this->type]['editor'];
             }
         }
 
-        throw new InvalidSectionTemplate('Can`t find a editor template for this section.');
+        return null;
     }
 
-    /**
-     * @throws InvalidSectionTemplate
-     */
-    public function frontendComponent(): string
+    public function frontendComponent(): ?string
     {
-        $config = config('livewire-section-builder.templates');
+        $registeredSections = config('livewire-section-builder.sections');
+        $templateSections = config('livewire-section-builder.templates');
 
-        foreach ($config[$this->template] as $section) {
-            if ($section['key'] === $this->type) {
-                return $section['frontend'];
+        foreach ($templateSections[$this->template] as $sectionKey) {
+            if ($sectionKey === $this->type) {
+                $sections = Arr::mapWithKeys($registeredSections, function (array $item, int $key) {
+                    return [$item['key'] => $item];
+                });
+
+                return $sections[$this->type]['frontend'];
             }
         }
 
-        throw new InvalidSectionTemplate('Can`t find a frontend template for this section.');
+        return null;
     }
 
     public function scopeWithFields(): Builder

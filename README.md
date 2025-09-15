@@ -26,18 +26,27 @@ php artisan vendor:publish --tag="livewire-section-builder-config"
 Конфигурационный массив имеет следующую вложенность:
 ```php
 retyrn [
-    'templates' => [
-        `<template_alias>` => [
-            `section_1_alias` => [
-                'key' => 'top_banner',
-                'title' => 'Top banner',
-                'model' => EloquentSectionModelClass::class,
-                'editor' => LivewireEditorComponent::class,
-                'frontend' => LivewireViewComponent::class,
-            ],
-            `section_1_alias` => [...]
+    'sections' => [
+        [
+            'key' => 'top_banner',
+            'title' => 'Top banner',
+            'model' => EloquentSectionModelClass::class,
+            'editor' => LivewireEditorComponent::class,
+            'frontend' => LivewireViewComponent::class,
         ],
-        `<another_template_alias` => [...], 
+        [
+            'key' => 'advantages',
+            'title' => 'Advantages',
+            'model' => EloquentSectionModelClass2::class,
+            'editor' => LivewireEditorComponent2::class,
+            'frontend' => LivewireViewComponent2::class,
+        ],
+    ],
+    'templates' => [
+        'main_page' => [
+            'top_banner',
+            'advantages',
+        ],
     ],
 ]
 ```
