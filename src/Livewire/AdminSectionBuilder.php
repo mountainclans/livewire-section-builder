@@ -110,9 +110,7 @@ class AdminSectionBuilder extends Component
 
     public function sortSections(string $sectionId, int $position): void
     {
-        $currentOrder = $this->sectionModels
-            ->pluck('id')
-            ->toArray();
+        $currentOrder = array_column($this->sectionModels, 'id');
 
         $currentIndex = array_search($sectionId, $currentOrder);
         if ($currentIndex === false) {
