@@ -97,7 +97,7 @@
 
                             <button wire:click="deleteSection('{{ $sectionModel->id }}')"
                                     wire:confirm="{{ __('livewire-section-builder::interface.sure_delete_this_section') }}"
-                                    class="w-6 h-6 cursor-pointe"
+                                    class="w-6 h-6 cursor-pointer"
                             >
                                 <svg class="w-6 h-6 text-red-800 dark:text-red-600"
                                      aria-hidden="true"
