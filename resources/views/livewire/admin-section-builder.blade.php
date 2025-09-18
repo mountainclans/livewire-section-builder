@@ -58,7 +58,7 @@
                         <div class="flex-grow-0 flex items-center gap-3">
                             {{-- Hide / show section --}}
                             <button wire:click="toggleSectionVisibility('{{ $sectionModel->id }}')"
-                                    class="w-6 h-6"
+                                    class="w-6 h-6 cursor-pointer"
                             >
                                 @if ($sectionModel->is_visible)
                                     <svg class="w-6 h-6 text-gray-800 dark:text-white"
@@ -97,7 +97,7 @@
 
                             <button wire:click="deleteSection('{{ $sectionModel->id }}')"
                                     wire:confirm="{{ __('livewire-section-builder::interface.sure_delete_this_section') }}"
-                                    class="w-6 h-6"
+                                    class="w-6 h-6 cursor-pointe"
                             >
                                 <svg class="w-6 h-6 text-red-800 dark:text-red-600"
                                      aria-hidden="true"
