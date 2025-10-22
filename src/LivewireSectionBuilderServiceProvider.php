@@ -18,7 +18,8 @@ class LivewireSectionBuilderServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasTranslations()
-            ->hasMigration('create_livewire_section_builder_table');
+            ->hasMigration('create_livewire_section_builder_table')
+            ->hasMigration('create_livewire_section_builder_repeaters_table');
     }
 
     public function packageBooted(): void
