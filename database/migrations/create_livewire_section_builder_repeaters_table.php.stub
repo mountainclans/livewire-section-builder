@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('builder_section_repeaters', function (Blueprint $table) {
+            $table->ulid('id')->primary();
+            $table->foreignUlid('section_id')
+                ->constrained('builder_sections')
+                ->cascadeOnDelete();
+            $table->string('type')->index();
+            $table->smallInteger('order_column')->default(0);
+            $table->schemalessAttributes('fields');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('builder_section_repeaters');
+    }
+};

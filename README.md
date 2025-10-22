@@ -134,6 +134,154 @@ $this->dispatch(AdminSectionBuilder::EVENT_SECTION_UPDATED);
 
 Данный компонент выведет все секции с нужным контентом и в нужном порядке.
 
+## Повторители
+
+Иногда при создании секции необходимо повторить в ней однотипные данные несколько раз. Сделать это призвана комбинация трейта `WithRepeaters` и использование blade-компонента `admin.repeater-editor`.
+
+Создайте модель-наследника `BuilderSectionRepeater` из пакета. Переопределите метод `allowedTypes`. Используйте данную модель как базовую, от которой будут наследоваться все повторители секций.
+
+```php
+use MountainClans\LivewireSectionBuilder\Models\BuilderSectionRepeater as BaseBuilderSectionRepeater;
+
+class BuilderSectionRepeater extends BaseBuilderSectionRepeater
+{
+    public static function allowedTypes(): array
+    {
+        return [
+            PropertiesSliderSection::REPEATER_TYPE => PropertiesTabRepeater::class,
+        ];
+    }
+}
+```
+
+Унаследуйтесь от этой модели для создания уникальных классов-повторителей.  Добавьте в них необходимые трейты (к примеру, `HasTranslations`, `FilledTranslatableFields`).
+
+Если модель использует `HasTranslations`, укажите список переводимых полей.
+
+```php
+class AdvantagesOneRepeater extends BuilderSectionRepeater
+{
+    protected function getInstanceType(): string
+    {
+        return AdvantagesOneSection::REPEATER_TYPE;
+    }
+
+    public array $translatable = [
+        'fields->title',
+        'fields->description',
+    ];
+}
+```
+
+### Настройка секции, использующей повторитель
+- добавьте в класс секции, использующей repeater, константу `REPEATER_TYPE`;
+- добавьте метод, реализующий связь `repeaters` (HasMany):
+
+```php
+class AdvantagesOneSection extends BuilderSection
+{
+    public const REPEATER_TYPE = 'advantages_1_repeater';
+
+    public function repeaters(): HasMany
+    {
+        return $this->hasMany(AdvantagesOneRepeater::class, 'section_id');
+    }
+}
+
+```
+
+### Редактор
+В редакторе секции используйте трейт `WithRepeaters`.
+
+```php
+class AdvantagesOneSectionEditor extends Component
+{
+    // другие трейты
+    use WithRepeaters;
+
+    // поля компонента
+
+    public AdvantagesOneSection $section;
+
+    public function mount(AdvantagesOneSection $section): void
+    {
+        // инициализационная логика
+
+        $this->setRepeaters();
+    }
+
+    public function saveSection(): void
+    {
+        // логика сохранения основного контента
+        $this->saveRepeaters();
+       
+        // другая логика
+        $this->dispatch(AdminSectionBuilder::EVENT_SECTION_UPDATED);
+    }
+
+    protected function getRepeaterModel(): string
+    {
+        return AdvantagesOneRepeater::class;
+    }
+
+    protected function getRepeaterFields(): array
+    {
+        return ['title', 'description'];
+    }
+    
+    // другая логика компонента
+}
+```
+
+Во `view` используйте компонент-обёртку для создания редактора контента повторителей. Пример ниже:
+
+```bladehtml
+{{-- Repeaters --}}
+    <div class="w-full border-gray-300 dark:border-purple-800 border-2 rounded-lg p-4 mb-6">
+        <h2 class="dark:text-white font-semibold mb-4">{{ __('Advantages') }}</h2>
+
+        @empty($repeaters)
+            <div class="p-4 text-sm text-gray-800 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-gray-300"
+                 role="alert">
+                {{ __('Not exists yet') }}
+            </div>
+        @else
+            @foreach($repeaters as $index => $repeater)
+                <x-admin.repeater-editor :repeater="$repeater" :index="$index">
+                    <x-ui.translatable>
+                        <div class="grid gap-4 grid-cols-1 lg:grid-cols-5 lg:gap-6">
+                            <div class="col-span-1">
+                                <x-ui.input wire:model="repeaters.{{ $index }}.title"
+                                            translatable
+                                            :placeholder="__('Title')"
+                                            :label="__('Title')"
+                                />
+                            </div>
+                            <div class="col-span-4">
+                                <x-ui.tiptap wire:model="repeaters.{{ $index }}.description"
+                                             translatable
+                                             height="70"
+                                             placeholder="{{ __('Description') }}"
+                                             label="{{ __('Description') }}"
+                                />
+                            </div>
+                        </div>
+                    </x-ui.translatable>
+                </x-admin.repeater-editor>
+            @endforeach
+        @endempty
+    </div>
+
+    <div class="flex justify-between items-center">
+        <button wire:click="addRepeater"
+                type="button"
+                class="cursor-pointer focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+        >{{ __('Add advantage') }}</button>
+
+        <x-ui.submit-button>{{ __('Save section') }}</x-ui.submit-button>
+    </div>
+```
+
 ## Авторы
 
 - [Vladimir Bajenov](https://github.com/mountainclans)

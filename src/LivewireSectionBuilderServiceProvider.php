@@ -2,6 +2,7 @@
 
 namespace MountainClans\LivewireSectionBuilder;
 
+use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use MountainClans\LivewireSectionBuilder\Livewire\AdminSectionBuilder;
 use MountainClans\LivewireSectionBuilder\Livewire\FrontendSectionViewer;
@@ -24,5 +25,7 @@ class LivewireSectionBuilderServiceProvider extends PackageServiceProvider
     {
         Livewire::component('admin-section-builder', AdminSectionBuilder::class);
         Livewire::component('frontend-section-viewer', FrontendSectionViewer::class);
+
+        Blade::component('livewire-section-builder::components/repeater-editor', 'admin.repeater-editor');
     }
 }
