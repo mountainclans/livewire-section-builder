@@ -191,7 +191,11 @@ class AdvantagesOneSection extends BuilderSection
 ```
 
 ### Редактор
-В редакторе секции используйте трейт `WithRepeaters`.
+В редакторе секции используйте трейт `WithRepeaters`. 
+
+**Обязательно** переопределите методы редактора секции `getRepeaterModel` и `getRepeaterFields`, как показано в примере.
+
+**Опционально** вы можете использовать метод `getRepeaterDefaults` для того, чтобы задать начальные значения полей.
 
 ```php
 class AdvantagesOneSectionEditor extends Component
