@@ -23,6 +23,7 @@
         "mountainclans/livewire-select": "^1.3",
         "mountainclans/livewire-ui": "^1.2",
         "spatie/eloquent-sortable": "^4.4",
+        "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-package-tools": "^1.16",
         "spatie/laravel-schemaless-attributes": "^2.5"
     },

@@ -101,13 +101,24 @@ trait WithRepeaters
             }
         }
 
+        $index = count($this->repeaters);
         $this->repeaters[] = $data;
+
+        // Автоматически инициализируем изображения, если трейт WithRepeaterImages подключен
+        if (method_exists($this, 'initRepeaterImages')) {
+            $this->initRepeaterImages($index);
+        }
     }
 
     public function deleteRepeater(string $repeaterId): void
     {
-        foreach ($this->repeaters as &$repeater) {
+        foreach ($this->repeaters as $index => &$repeater) {
             if ($repeater['id'] == $repeaterId) {
+                // Автоматически очищаем изображения, если трейт WithRepeaterImages подключен
+                if (method_exists($this, 'cleanupRepeaterImages')) {
+                    $this->cleanupRepeaterImages($index);
+                }
+
                 $repeater['is_deleted'] = true;
 
                 if (method_exists($this, 'info')) {
@@ -137,7 +148,7 @@ trait WithRepeaters
 
         $this->repeaters = array_values(array_filter($this->repeaters, fn($r) => !$r['is_deleted']));
 
-        foreach ($this->repeaters as $repeaterData) {
+        foreach ($this->repeaters as $index => $repeaterData) {
             $repeater = !empty($repeaterData['id'])
                 ? $this->section->repeaters()->findOrFail($repeaterData['id'])
                 : new $modelClass();
@@ -155,6 +166,16 @@ trait WithRepeaters
             }
 
             $repeater->save();
+
+            // Обновляем ID в массиве repeaters для новых записей
+            if (empty($repeaterData['id'])) {
+                $this->repeaters[$index]['id'] = $repeater->id;
+            }
+        }
+
+        // Автоматически сохраняем изображения репитеров, если трейт WithRepeaterImages подключен
+        if (method_exists($this, 'persistRepeaterImages')) {
+            $this->persistRepeaterImages();
         }
 
         $this->setRepeaters();
