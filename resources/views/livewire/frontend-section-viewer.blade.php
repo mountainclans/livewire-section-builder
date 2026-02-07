@@ -7,7 +7,9 @@
             /** @var BuilderSection $sectionModel */
         @endphp
 
-        <div wire:key="{{ $sectionModel->type . '-' . $sectionModel->id }}">
+        <div wire:key="{{ $sectionModel->type . '-' . $sectionModel->id }}"
+             class="{{ $sectionModel->id }}_section"
+        >
             <livewire:is :component="$sectionModel->frontendComponent()"
                          :section="$sectionModel"
                          wire:key="{{ $sectionModel->id }}"
