@@ -8,7 +8,7 @@
         @endphp
 
         <div wire:key="{{ $sectionModel->type . '-' . $sectionModel->id }}"
-             class="{{ $sectionModel->id }}_section"
+             class="{{ $sectionModel->type }}_section"
         >
             <livewire:is :component="$sectionModel->frontendComponent()"
                          :section="$sectionModel"
