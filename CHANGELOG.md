@@ -2,6 +2,10 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.2.1 - 2026-02-07
+
+Printing the class based on section model type at section wrapper
+
 ## 1.2.0 - 2025-12-21
 
 Created trait WithRepeaterImages
