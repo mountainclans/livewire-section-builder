@@ -41,6 +41,7 @@ class BuilderSection extends Model
     public static function allowedTypes(): array
     {
         $registeredSections = config('livewire-section-builder.sections');
+
         return Arr::mapWithKeys($registeredSections, function (array $item, int $key) {
             return [$item['key'] => $item['model']];
         });

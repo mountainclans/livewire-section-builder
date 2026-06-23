@@ -15,10 +15,13 @@ trait WithRepeaterImages
     use WithFileUploads;
 
     public array $repeaterTempMedia = [];
+
     public array $uploadedRepeaterImages = [];
 
     public array $repeaterImages = [];
+
     public array $repeaterImageIdsForDelete = [];
+
     public array $repeaterImageIdsForOrdering = [];
 
     public function mountWithRepeaterImages(): void
@@ -52,7 +55,7 @@ trait WithRepeaterImages
             }
 
             $this->validate([
-                "uploadedRepeaterImages.{$index}.*" => 'image|max:5012|mimes:jpg,jpeg,png,webp,svg'
+                "uploadedRepeaterImages.{$index}.*" => 'image|max:5012|mimes:jpg,jpeg,png,webp,svg',
             ]);
 
             // Убедимся, что максимальное количество изображений не превышено
@@ -62,6 +65,7 @@ trait WithRepeaterImages
             if ($max > 0 && $currentCount + count($images) > $max) {
                 $this->addError("uploadedRepeaterImages.{$index}", "You can't upload more than {$max} images.");
                 $this->uploadedRepeaterImages[$index] = [];
+
                 continue;
             }
 
@@ -73,7 +77,7 @@ trait WithRepeaterImages
                     ->withResponsiveImages()
                     ->toMediaCollection(TempMedia::COLLECTION_TEMP_IMAGES);
 
-                if (!isset($this->repeaterImageIdsForOrdering[$index])) {
+                if (! isset($this->repeaterImageIdsForOrdering[$index])) {
                     $this->repeaterImageIdsForOrdering[$index] = [];
                 }
 
@@ -104,7 +108,7 @@ trait WithRepeaterImages
             if ($repeaterId) {
                 $repeaterModel = $this->getRepeaterModel()::find($repeaterId);
                 if ($repeaterModel && $media->model_type === $this->getRepeaterModel() && $media->model_id === $repeaterModel->id) {
-                    if (!isset($this->repeaterImageIdsForDelete[$repeaterIndex])) {
+                    if (! isset($this->repeaterImageIdsForDelete[$repeaterIndex])) {
                         $this->repeaterImageIdsForDelete[$repeaterIndex] = [];
                     }
                     $this->repeaterImageIdsForDelete[$repeaterIndex][] = $mediaId;
@@ -116,7 +120,7 @@ trait WithRepeaterImages
                 $this->repeaterImageIdsForOrdering[$repeaterIndex] = array_filter(
                     $this->repeaterImageIdsForOrdering[$repeaterIndex],
                     function ($imageId) use ($repeaterIndex) {
-                        return !in_array($imageId, $this->repeaterImageIdsForDelete[$repeaterIndex] ?? []);
+                        return ! in_array($imageId, $this->repeaterImageIdsForDelete[$repeaterIndex] ?? []);
                     }
                 );
             }
@@ -127,7 +131,7 @@ trait WithRepeaterImages
 
     public function sortRepeaterImages(int $repeaterIndex, string $mediaId, int $position): void
     {
-        if (!isset($this->repeaterImageIdsForOrdering[$repeaterIndex])) {
+        if (! isset($this->repeaterImageIdsForOrdering[$repeaterIndex])) {
             return;
         }
 
@@ -151,14 +155,14 @@ trait WithRepeaterImages
         foreach ($this->repeaters as $index => $repeaterData) {
             $repeaterId = $repeaterData['id'] ?? null;
 
-            if (!$repeaterId) {
+            if (! $repeaterId) {
                 continue;
             }
 
             /** @var Model&HasMedia $repeater */
             $repeater = $this->getRepeaterModel()::find($repeaterId);
 
-            if (!$repeater) {
+            if (! $repeater) {
                 continue;
             }
 
@@ -201,8 +205,8 @@ trait WithRepeaterImages
             if ($repeater) {
                 $images = $repeater
                     ->getMedia($this->getRepeaterImagesCollection())
-                    ->filter(fn($media) => $media instanceof Media)
-                    ->map(fn(Media $media) => [
+                    ->filter(fn ($media) => $media instanceof Media)
+                    ->map(fn (Media $media) => [
                         'id' => $media->id,
                         'url' => $media->getUrl(),
                         'admin_preview' => $media->getUrl('admin_preview'),
@@ -215,8 +219,8 @@ trait WithRepeaterImages
         if (isset($this->repeaterTempMedia[$repeaterIndex])) {
             $tempImages = $this->repeaterTempMedia[$repeaterIndex]
                 ->getMedia(TempMedia::COLLECTION_TEMP_IMAGES)
-                ->filter(fn($media) => $media instanceof Media)
-                ->map(fn(Media $media) => [
+                ->filter(fn ($media) => $media instanceof Media)
+                ->map(fn (Media $media) => [
                     'id' => $media->id,
                     'url' => $media->getUrl(),
                     'admin_preview' => $media->getUrl('admin_preview'),
@@ -228,9 +232,9 @@ trait WithRepeaterImages
         }
 
         // Удалим из списка изображения, помеченные для удаления
-        if (isset($this->repeaterImageIdsForDelete[$repeaterIndex]) && !empty($this->repeaterImageIdsForDelete[$repeaterIndex])) {
+        if (isset($this->repeaterImageIdsForDelete[$repeaterIndex]) && ! empty($this->repeaterImageIdsForDelete[$repeaterIndex])) {
             $images = array_filter($images, function ($image) use ($repeaterIndex) {
-                return !in_array($image['id'], $this->repeaterImageIdsForDelete[$repeaterIndex]);
+                return ! in_array($image['id'], $this->repeaterImageIdsForDelete[$repeaterIndex]);
             });
         }
 
@@ -252,8 +256,8 @@ trait WithRepeaterImages
      */
     private function initRepeaterImagesForIndex(int $index): void
     {
-        if (!isset($this->repeaterTempMedia[$index])) {
-            $tempMedia = new TempMedia();
+        if (! isset($this->repeaterTempMedia[$index])) {
+            $tempMedia = new TempMedia;
             $tempMedia->for_model = $this->getRepeaterModel();
             $tempMedia->save();
 
@@ -263,12 +267,12 @@ trait WithRepeaterImages
         $this->loadExistingRepeaterImages($index);
 
         // установим порядок изображений для репитера
-        if (!isset($this->repeaterImageIdsForOrdering[$index])) {
+        if (! isset($this->repeaterImageIdsForOrdering[$index])) {
             $this->repeaterImageIdsForOrdering[$index] = [];
         }
 
         foreach ($this->repeaterImages[$index] ?? [] as $image) {
-            if (!in_array($image['id'], $this->repeaterImageIdsForOrdering[$index])) {
+            if (! in_array($image['id'], $this->repeaterImageIdsForOrdering[$index])) {
                 $this->repeaterImageIdsForOrdering[$index][] = $image['id'];
             }
         }

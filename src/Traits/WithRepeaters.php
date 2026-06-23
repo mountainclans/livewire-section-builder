@@ -84,7 +84,7 @@ trait WithRepeaters
     public function addRepeater(): void
     {
         $modelClass = $this->getRepeaterModel();
-        $blankRepeater = new $modelClass();
+        $blankRepeater = new $modelClass;
         $fields = $this->normalizeFields();
         $defaults = $this->getRepeaterDefaults();
 
@@ -146,12 +146,12 @@ trait WithRepeaters
             )
             ->delete();
 
-        $this->repeaters = array_values(array_filter($this->repeaters, fn($r) => !$r['is_deleted']));
+        $this->repeaters = array_values(array_filter($this->repeaters, fn ($r) => ! $r['is_deleted']));
 
         foreach ($this->repeaters as $index => $repeaterData) {
-            $repeater = !empty($repeaterData['id'])
+            $repeater = ! empty($repeaterData['id'])
                 ? $this->section->repeaters()->findOrFail($repeaterData['id'])
-                : new $modelClass();
+                : new $modelClass;
 
             $repeater->section_id = $this->section->id;
             $repeater->type = $this->section::REPEATER_TYPE ?? null;
@@ -189,7 +189,7 @@ trait WithRepeaters
      */
     protected function isTranslatable(string $modelClass, string $key): bool
     {
-        return in_array($key, (new $modelClass())->translatable ?? []);
+        return in_array($key, (new $modelClass)->translatable ?? []);
     }
 
     protected function castValue(mixed $value, string $type): mixed

@@ -10,17 +10,25 @@ use MountainClans\LivewireSectionBuilder\Models\BuilderSection;
 class AdminSectionBuilder extends Component
 {
     public const EVENT_SECTION_ADDED = 'section_builder_section_added';
+
     public const EVENT_SECTION_UPDATED = 'section_builder_section_updated';
+
     public const EVENT_SECTION_SORTED = 'section_builder_section_sorted';
+
     public const EVENT_SECTION_HIDDEN = 'section_builder_section_hidden';
+
     public const EVENT_SECTION_SHOWED = 'section_builder_section_showed';
+
     public const EVENT_SECTION_DELETED = 'section_builder_section_deleted';
 
     public string $template;
+
     public string $pageId;
+
     public string $newSectionType = '';
 
     public array $availableSections = [];
+
     public array $sectionModels = [];
 
     public function mount(string $template, string $pageId): void
@@ -40,6 +48,7 @@ class AdminSectionBuilder extends Component
 
         if (empty($templateSections)) {
             $this->availableSections = [];
+
             return;
         }
 
@@ -95,7 +104,7 @@ class AdminSectionBuilder extends Component
     {
         $section = BuilderSection::query()->withSubclasses()->findOrFail($sectionId);
 
-        $section->is_visible = !$section->is_visible;
+        $section->is_visible = ! $section->is_visible;
 
         $section->save();
 

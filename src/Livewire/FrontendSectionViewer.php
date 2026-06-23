@@ -9,6 +9,7 @@ use MountainClans\LivewireSectionBuilder\Models\BuilderSection;
 class FrontendSectionViewer extends Component
 {
     public string $template;
+
     public string $pageId;
 
     public array $sectionModels = [];
