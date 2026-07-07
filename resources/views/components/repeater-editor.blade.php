@@ -24,7 +24,7 @@
 
     {{-- Кнопка сворачивания --}}
     <button x-on:click="toggle()"
-            class="absolute right-11 top-3 w-6 h-6 cursor-pointer"
+            class="absolute right-11 top-5 w-6 h-6 cursor-pointer"
             type="button"
     >
         <svg x-show="!collapsed"
@@ -65,7 +65,7 @@
     {{-- Кнопка удаления --}}
     <button wire:click="deleteRepeater('{{ $repeater['id'] }}')"
             wire:confirm="Are you sure you want to delete this element?"
-            class="absolute right-3 top-3 w-6 h-6 cursor-pointer"
+            class="absolute right-3 top-5 w-6 h-6 cursor-pointer"
             type="button"
     >
         <svg class="w-6 h-6 text-red-800 dark:text-red-600" aria-hidden="true"
