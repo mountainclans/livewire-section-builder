@@ -2,6 +2,10 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.6.3 - 2026-07-07
+
+Collapsible script moved to the root of the element for preventing component degradation after page refresh via JS
+
 ## 1.6.2 - 2026-07-07
 
 Fix livewire-incorrect keys inside the repeater-editor.blade.php
