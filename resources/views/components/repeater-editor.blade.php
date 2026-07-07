@@ -11,8 +11,6 @@
      wire:key="repeater_{{ !empty($repeater['id']) ? $repeater['id'] : 'new-' . $index }}"
      x-data="sbCollapsible('{{ !empty($repeater['id']) ? 'sb-collapsed:repeater:' . $repeater['id'] : '' }}')"
 >
-    @include('livewire-section-builder::components.collapsible-script')
-
     {{-- Свёрнутое состояние: компактная плашка вместо полей --}}
     <div x-show="collapsed"
          x-cloak

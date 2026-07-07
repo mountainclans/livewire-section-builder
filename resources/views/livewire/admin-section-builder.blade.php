@@ -1,6 +1,11 @@
 @use('MountainClans\LivewireSectionBuilder\Models\BuilderSection')
 
 <div class="w-full p-4 rounded-lg my-5 border border-gray-500 dark:border-gray-700 mb-36">
+    {{-- Скрипт сворачивания — в корне, ВНЕ морфимых карточек: инжект внутри
+         списка ломает morph первого элемента при частичных рендерах (@once
+         срабатывает заново в запросе редактора и вставляет script в карточку). --}}
+    @include('livewire-section-builder::components.collapsible-script')
+
     {{-- Список секций и их редакторы --}}
     <div class="mb-3">
         <h2 class="dark:text-white font-semibold mb-4">
@@ -27,8 +32,6 @@
                      class="w-full border border-gray-300 dark:border-gray-600 border-2 rounded-lg p-4 mb-6"
                      x-data="sbCollapsible('sb-collapsed:section:{{ $sectionModel->id }}')"
                 >
-                    @include('livewire-section-builder::components.collapsible-script')
-
                     <div class="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-3">
                         {{-- Sort handler --}}
                         <div x-sort:handle
