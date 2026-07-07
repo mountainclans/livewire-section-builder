@@ -1,5 +1,6 @@
 <?php
 
+use MountainClans\LivewireSectionBuilder\Models\BuilderSection;
 use MountainClans\LivewireSectionBuilder\Tests\Fixtures\ApiSection;
 use MountainClans\LivewireSectionBuilder\Tests\Fixtures\ApiSectionRepeater;
 
@@ -80,4 +81,14 @@ it('frontendComponent — null для headless-секции, editorComponent р�
 
 it('apiSchema резолвит класс схемы из реестра', function () {
     expect($this->section->apiSchema())->toBe('stub-schema');
+});
+
+it('apiSchemas отдаёт карту «тип => схема» по всему реестру, без Livewire-секций', function () {
+    config()->set('livewire-section-builder.sections', [
+        ['key' => 'api_section', 'title' => 'A', 'model' => 'M', 'editor' => 'E', 'schema' => 'stub-schema'],
+        ['key' => 'livewire_only', 'title' => 'B', 'model' => 'M', 'editor' => 'E', 'frontend' => 'F'],
+    ]);
+
+    expect(BuilderSection::apiSchemas())
+        ->toBe(['api_section' => 'stub-schema']);
 });

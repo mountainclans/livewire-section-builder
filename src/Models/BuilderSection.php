@@ -88,6 +88,19 @@ class BuilderSection extends Model
         return $this->registryValue('schema');
     }
 
+    /**
+     * Карта «тип секции => класс API-схемы» по всему реестру — единая точка,
+     * откуда достаются схемы контракта (кодген, аудит полноты oneOf и т.п.).
+     * Секции без 'schema' (Livewire-режим) в карту не попадают.
+     */
+    public static function apiSchemas(): array
+    {
+        return collect(config('livewire-section-builder.sections', []))
+            ->filter(fn (array $item) => ! empty($item['schema']))
+            ->mapWithKeys(fn (array $item) => [$item['key'] => $item['schema']])
+            ->all();
+    }
+
     private function registryValue(string $configKey): ?string
     {
         $registeredSections = config('livewire-section-builder.sections');
