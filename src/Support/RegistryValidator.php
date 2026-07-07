@@ -6,8 +6,9 @@ use InvalidArgumentException;
 
 /**
  * Проверка реестра секций (opt-in: config 'validate_registry').
- * В headless-режиме ('headless' => true) ключ 'frontend' опционален,
- * иначе обязателен, как и остальные ключи секции.
+ * В headless-режиме ('headless' => true) вместо 'frontend' обязателен
+ * 'schema' — класс API-схемы секции: реестр становится единым местом,
+ * откуда достаются все схемы контракта.
  */
 class RegistryValidator
 {
@@ -19,7 +20,9 @@ class RegistryValidator
 
         $required = ['key', 'title', 'model', 'editor'];
 
-        if (! config('livewire-section-builder.headless', false)) {
+        if (config('livewire-section-builder.headless', false)) {
+            $required[] = 'schema';
+        } else {
             $required[] = 'frontend';
         }
 

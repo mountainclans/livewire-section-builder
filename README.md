@@ -297,7 +297,9 @@ class AdvantagesOneSectionEditor extends Component
 
 ```php
 // config/livewire-section-builder.php
-'headless' => true,           // ключ 'frontend' в реестре секций становится опциональным
+'headless' => true,           // 'frontend' в реестре опционален; вместо него обязателен 'schema'
+                              // (класс API-схемы секции) — реестр как единое место всех схем контракта;
+                              // резолв на модели: $section->apiSchema()
 'validate_registry' => true,  // opt-in проверка реестра при загрузке приложения
 'media_serializer' => App\Support\StrapiLikeMediaSerializer::class, // формат медиа задаёт приложение
 ```

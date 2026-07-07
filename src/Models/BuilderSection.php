@@ -82,6 +82,12 @@ class BuilderSection extends Model
         return $this->registryValue('frontend');
     }
 
+    /** Класс API-схемы секции из реестра ('schema', headless-режим). */
+    public function apiSchema(): ?string
+    {
+        return $this->registryValue('schema');
+    }
+
     private function registryValue(string $configKey): ?string
     {
         $registeredSections = config('livewire-section-builder.sections');

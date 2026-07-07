@@ -35,15 +35,10 @@ return [
         //                'title' => 'Top banner',
         //                'model' => EloquentSectionModelClass::class,
         //                'editor' => LivewireEditorComponent::class,
-        //                'frontend' => LivewireViewComponent::class,
+        //                'frontend' => LivewireViewComponent::class, // Livewire-режим
+        //                'schema' => OpenApiSchemaClass::class,      // headless-режим
         //            ],
-        //            [
-        //                'key' => 'advantages',
-        //                'title' => 'Advantages',
-        //                'model' => EloquentSectionModelClass::class,
-        //                'editor' => LivewireEditorComponent::class,
-        //                'frontend' => LivewireViewComponent::class,
-        //            ]
+        //            ...
     ],
     'templates' => [
         //        'main_page' => [

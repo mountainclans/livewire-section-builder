@@ -13,6 +13,7 @@ beforeEach(function () {
             'title' => 'API section',
             'model' => ApiSection::class,
             'editor' => 'stub-editor',
+            'schema' => 'stub-schema',
             // 'frontend' отсутствует — headless-секция без Livewire-представления.
         ],
     ]);
@@ -75,4 +76,8 @@ it('toApiArray отдаёт репитеры по order_column с id и пере
 it('frontendComponent — null для headless-секции, editorComponent работает', function () {
     expect($this->section->frontendComponent())->toBeNull()
         ->and($this->section->editorComponent())->toBe('stub-editor');
+});
+
+it('apiSchema резолвит класс схемы из реестра', function () {
+    expect($this->section->apiSchema())->toBe('stub-schema');
 });
