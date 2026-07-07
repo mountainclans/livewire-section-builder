@@ -2,6 +2,10 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.6.0 - 2026-07-07
+
+Schema - add new required config field for headless mode
+
 ## 1.5.2 - 2026-07-07
 
 Styles
