@@ -286,6 +286,32 @@ class AdvantagesOneSectionEditor extends Component
     </div>
 ```
 
+## Headless-режим (API)
+
+По умолчанию пакет работает в Livewire-first режиме и ведёт себя как раньше. Для headless-проектов (контент отдаётся фронтенду через JSON API) предусмотрен опциональный слой:
+
+```php
+// config/livewire-section-builder.php
+'headless' => true,           // ключ 'frontend' в реестре секций становится опциональным
+'validate_registry' => true,  // opt-in проверка реестра при загрузке приложения
+'media_serializer' => App\Support\StrapiLikeMediaSerializer::class, // формат медиа задаёт приложение
+```
+
+Сериализация секции:
+
+```php
+$section->toApiArray('ru');
+// schemaless-поля секции: переводимые ('fields->title' в $translatable) — в запрошенной
+// локали с фолбэком на app.fallback_locale, остальные — как есть;
+// + 'repeaters' => [{id, ...поля}] по order_column (базовая связь repeaters() есть у любой секции).
+```
+
+Метод можно переопределить в конкретной секции — например, добавить медиа-коллекции через хелпер `serializeMediaCollection('collection_name')`, который использует настроенный `media_serializer` (класс-инвокабл, реализующий `Contracts\SerializesMedia`; дефолт — `{url, alt}`).
+
+Секции без ключа `frontend` Livewire-компонент `frontend-section-viewer` молча пропускает, так что смешанные проекты (часть секций — Livewire, часть — API) тоже возможны.
+
+Классы медиа-моделей, используемые `WithRepeaterImages`, настраиваются ключами `media_model` / `temp_media_model` (по умолчанию `App\Models\Media` / `App\Models\TempMedia` — как раньше).
+
 ## Авторы
 
 - [Vladimir Bajenov](https://github.com/mountainclans)

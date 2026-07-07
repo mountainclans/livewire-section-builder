@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use MountainClans\LivewireSectionBuilder\Livewire\AdminSectionBuilder;
 use MountainClans\LivewireSectionBuilder\Livewire\FrontendSectionViewer;
+use MountainClans\LivewireSectionBuilder\Support\RegistryValidator;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -28,5 +29,7 @@ class LivewireSectionBuilderServiceProvider extends PackageServiceProvider
         Livewire::component('frontend-section-viewer', FrontendSectionViewer::class);
 
         Blade::component('livewire-section-builder::components/repeater-editor', 'admin.repeater-editor');
+
+        (new RegistryValidator)();
     }
 }

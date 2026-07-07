@@ -3,12 +3,26 @@
 namespace MountainClans\LivewireSectionBuilder\Traits;
 
 use MountainClans\LivewireSectionBuilder\Models\BuilderSection;
+use MountainClans\LivewireSectionBuilder\Models\BuilderSectionRepeater;
 
-/** @property BuilderSection $section */
+/**
+ * Используется в Livewire-компоненте редактора секции.
+ *
+ * @property BuilderSection $section
+ *
+ * Методы ниже принадлежат соседним трейтам компонента и вызываются только
+ * под method_exists-guard (докблок — для IDE и статанализа):
+ *
+ * @method void info(string $message) Toastable-нотификация приложения
+ * @method void initRepeaterImages(int $index) WithRepeaterImages
+ * @method void cleanupRepeaterImages(int $index) WithRepeaterImages
+ * @method void persistRepeaterImages() WithRepeaterImages
+ */
 trait WithRepeaters
 {
     public array $repeaters = [];
 
+    /** @return class-string<BuilderSectionRepeater> */
     abstract protected function getRepeaterModel(): string;
 
     /**
@@ -57,10 +71,11 @@ trait WithRepeaters
     {
         $modelClass = $this->getRepeaterModel();
         $fields = $this->normalizeFields();
+        $defaults = $this->getRepeaterDefaults();
 
         $this->repeaters = $this->section->repeaters()
             ->get()
-            ->map(function ($repeater) use ($fields, $modelClass) {
+            ->map(function ($repeater) use ($fields, $modelClass, $defaults) {
                 $data = [
                     'id' => $repeater->id,
                     'is_deleted' => false,

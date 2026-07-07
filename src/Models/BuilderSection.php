@@ -5,17 +5,35 @@ namespace MountainClans\LivewireSectionBuilder\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use MountainClans\LaravelPolymorphicModel\Attributes\RequiresOverride;
 use MountainClans\LaravelPolymorphicModel\Traits\PolymorphicModel;
+use MountainClans\LivewireSectionBuilder\Traits\ResolvesApiFields;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\SchemalessAttributes\Casts\SchemalessAttributes;
 
+/**
+ * @property string $id
+ * @property string $template
+ * @property string $page_id
+ * @property string $type
+ * @property int $order_column
+ * @property bool $is_visible
+ * @property \Spatie\SchemalessAttributes\SchemalessAttributes $fields не путать с импортированным классом каста
+ */
 class BuilderSection extends Model
 {
     use HasUlids;
     use PolymorphicModel;
+    use ResolvesApiFields;
     use SortableTrait;
+
+    /**
+     * Тип элементов репитера секции — переопределяется в секциях,
+     * использующих репитеры (см. WithRepeaters::saveRepeaters()).
+     */
+    public const REPEATER_TYPE = null;
 
     protected $table = 'builder_sections';
 
@@ -55,42 +73,68 @@ class BuilderSection extends Model
 
     public function editorComponent(): ?string
     {
+        return $this->registryValue('editor');
+    }
+
+    /**
+     * null не только для незарегистрированной секции, но и для headless-секции
+     * без Livewire-представления ('frontend' в реестре опционален).
+     */
+    public function frontendComponent(): ?string
+    {
+        return $this->registryValue('frontend');
+    }
+
+    private function registryValue(string $configKey): ?string
+    {
         $registeredSections = config('livewire-section-builder.sections');
         $templateSections = config('livewire-section-builder.templates');
 
-        foreach ($templateSections[$this->template] as $sectionKey) {
+        foreach ($templateSections[$this->template] ?? [] as $sectionKey) {
             if ($sectionKey === $this->type) {
                 $sections = Arr::mapWithKeys($registeredSections, function (array $item, int $key) {
                     return [$item['key'] => $item];
                 });
 
-                return $sections[$this->type]['editor'];
+                return $sections[$this->type][$configKey] ?? null;
             }
         }
 
         return null;
     }
 
-    public function frontendComponent(): ?string
+    /**
+     * Секция для headless-витрины: schemaless-поля (переводимые — в заданной
+     * локали) + репитеры по порядку. Медиа по умолчанию не включаются —
+     * секция с картинками переопределяет метод и добавляет свои коллекции
+     * через serializeMediaCollection().
+     */
+    public function toApiArray(string $locale): array
     {
-        $registeredSections = config('livewire-section-builder.sections');
-        $templateSections = config('livewire-section-builder.templates');
+        $data = $this->resolveApiFields($locale);
 
-        foreach ($templateSections[$this->template] as $sectionKey) {
-            if ($sectionKey === $this->type) {
-                $sections = Arr::mapWithKeys($registeredSections, function (array $item, int $key) {
-                    return [$item['key'] => $item];
-                });
+        $data['repeaters'] = $this->repeaters()
+            ->orderBy('order_column')
+            ->get()
+            ->map(fn (BuilderSectionRepeater $repeater) => $repeater->toApiArray($locale))
+            ->values()
+            ->all();
 
-                return $sections[$this->type]['frontend'];
-            }
-        }
-
-        return null;
+        return $data;
     }
 
     public function scopeWithFields(): Builder
     {
         return $this->fields->modelScope();
+    }
+
+    /**
+     * Элементы репитера секции. Секции с репитерами переопределяют связь
+     * конкретной моделью; базовая реализация делает вызов безопасным
+     * для любой секции (пустая коллекция вместо фатальной ошибки).
+     */
+    public function repeaters(): HasMany
+    {
+        return $this->hasMany(BuilderSectionRepeater::class, 'section_id');
     }
 }

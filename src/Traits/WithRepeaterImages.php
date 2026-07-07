@@ -2,14 +2,22 @@
 
 namespace MountainClans\LivewireSectionBuilder\Traits;
 
-use App\Models\Media;
-use App\Models\TempMedia;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Component;
 use Livewire\WithFileUploads;
+use MountainClans\LivewireSectionBuilder\Models\BuilderSectionRepeater;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
 
+/**
+ * Используется в Livewire-компоненте редактора секции вместе с WithRepeaters.
+ *
+ * @mixin Component
+ *
+ * @property array $repeaters из WithRepeaters
+ */
 trait WithRepeaterImages
 {
     use WithFileUploads;
@@ -32,9 +40,37 @@ trait WithRepeaterImages
         }
     }
 
+    /** @return class-string<BuilderSectionRepeater> */
     abstract protected function getRepeaterModel(): string;
 
     abstract protected function getRepeaterImagesCollection(): string;
+
+    /**
+     * Классы медиа-моделей приложения — конфигурируемы
+     * (config 'media_model' / 'temp_media_model'), дефолты прежние.
+     *
+     * @return class-string<SpatieMedia>
+     */
+    protected function mediaModelClass(): string
+    {
+        // Строка, не ::class — классы приложения в контексте пакета не существуют.
+        return config('livewire-section-builder.media_model', 'App\Models\Media');
+    }
+
+    /** @return class-string<Model> */
+    protected function tempMediaModelClass(): string
+    {
+        return config('livewire-section-builder.temp_media_model', 'App\Models\TempMedia');
+    }
+
+    /**
+     * Имя temp-коллекции — константа COLLECTION_TEMP_IMAGES класса temp-медиа
+     * приложения; через constant(), т.к. класс в контексте пакета не существует.
+     */
+    protected function tempImagesCollectionName(): string
+    {
+        return constant($this->tempMediaModelClass().'::COLLECTION_TEMP_IMAGES');
+    }
 
     protected function maxRepeaterImagesCount(): int
     {
@@ -75,7 +111,7 @@ trait WithRepeaterImages
                 $media = $this->repeaterTempMedia[$index]
                     ->addMedia($image)
                     ->withResponsiveImages()
-                    ->toMediaCollection(TempMedia::COLLECTION_TEMP_IMAGES);
+                    ->toMediaCollection($this->tempImagesCollectionName());
 
                 if (! isset($this->repeaterImageIdsForOrdering[$index])) {
                     $this->repeaterImageIdsForOrdering[$index] = [];
@@ -91,13 +127,14 @@ trait WithRepeaterImages
 
     public function deleteRepeaterImage(int $repeaterIndex, string $mediaId): void
     {
-        $media = Media::find($mediaId);
+        $mediaClass = $this->mediaModelClass();
+        $media = $mediaClass::find($mediaId);
 
         if ($media) {
             // Временные файлы удаляем насовсем
             if (
                 isset($this->repeaterTempMedia[$repeaterIndex])
-                && $media->model_type === TempMedia::class
+                && $media->model_type === $this->tempMediaModelClass()
                 && $media->model_id === $this->repeaterTempMedia[$repeaterIndex]->id
             ) {
                 $media->delete();
@@ -152,6 +189,8 @@ trait WithRepeaterImages
     {
         $this->clearValidation();
 
+        $mediaClass = $this->mediaModelClass();
+
         foreach ($this->repeaters as $index => $repeaterData) {
             $repeaterId = $repeaterData['id'] ?? null;
 
@@ -169,7 +208,7 @@ trait WithRepeaterImages
             // Удаляем помеченные изображения
             if (isset($this->repeaterImageIdsForDelete[$index])) {
                 foreach ($this->repeaterImageIdsForDelete[$index] as $imageId) {
-                    $image = Media::find($imageId);
+                    $image = $mediaClass::find($imageId);
 
                     if ($image && $image->model_type === $this->getRepeaterModel() && $image->model_id === $repeater->id) {
                         $image->delete();
@@ -179,13 +218,13 @@ trait WithRepeaterImages
 
             // Устанавливаем порядок
             if (isset($this->repeaterImageIdsForOrdering[$index])) {
-                Media::setNewOrder($this->repeaterImageIdsForOrdering[$index]);
+                $mediaClass::setNewOrder($this->repeaterImageIdsForOrdering[$index]);
             }
 
             // Перемещаем временные изображения к репитеру
             if (isset($this->repeaterTempMedia[$index])) {
-                /** @var Media $image */
-                foreach ($this->repeaterTempMedia[$index]->getMedia(TempMedia::COLLECTION_TEMP_IMAGES) as $image) {
+                /** @var SpatieMedia $image */
+                foreach ($this->repeaterTempMedia[$index]->getMedia($this->tempImagesCollectionName()) as $image) {
                     $image->move($repeater, $this->getRepeaterImagesCollection());
                 }
             }
@@ -194,6 +233,7 @@ trait WithRepeaterImages
 
     private function loadExistingRepeaterImages(int $repeaterIndex): void
     {
+        $mediaClass = $this->mediaModelClass();
         $images = [];
 
         $repeaterId = $this->repeaters[$repeaterIndex]['id'] ?? null;
@@ -205,8 +245,8 @@ trait WithRepeaterImages
             if ($repeater) {
                 $images = $repeater
                     ->getMedia($this->getRepeaterImagesCollection())
-                    ->filter(fn ($media) => $media instanceof Media)
-                    ->map(fn (Media $media) => [
+                    ->filter(fn ($media) => $media instanceof $mediaClass)
+                    ->map(fn (SpatieMedia $media) => [
                         'id' => $media->id,
                         'url' => $media->getUrl(),
                         'admin_preview' => $media->getUrl('admin_preview'),
@@ -218,9 +258,9 @@ trait WithRepeaterImages
         // Добавляем временные изображения
         if (isset($this->repeaterTempMedia[$repeaterIndex])) {
             $tempImages = $this->repeaterTempMedia[$repeaterIndex]
-                ->getMedia(TempMedia::COLLECTION_TEMP_IMAGES)
-                ->filter(fn ($media) => $media instanceof Media)
-                ->map(fn (Media $media) => [
+                ->getMedia($this->tempImagesCollectionName())
+                ->filter(fn ($media) => $media instanceof $mediaClass)
+                ->map(fn (SpatieMedia $media) => [
                     'id' => $media->id,
                     'url' => $media->getUrl(),
                     'admin_preview' => $media->getUrl('admin_preview'),
@@ -257,7 +297,9 @@ trait WithRepeaterImages
     private function initRepeaterImagesForIndex(int $index): void
     {
         if (! isset($this->repeaterTempMedia[$index])) {
-            $tempMedia = new TempMedia;
+            $tempMediaClass = $this->tempMediaModelClass();
+
+            $tempMedia = new $tempMediaClass;
             $tempMedia->for_model = $this->getRepeaterModel();
             $tempMedia->save();
 
@@ -295,7 +337,7 @@ trait WithRepeaterImages
     {
         // Удаляем временные медиа
         if (isset($this->repeaterTempMedia[$index])) {
-            $this->repeaterTempMedia[$index]->clearMediaCollection(TempMedia::COLLECTION_TEMP_IMAGES);
+            $this->repeaterTempMedia[$index]->clearMediaCollection($this->tempImagesCollectionName());
             $this->repeaterTempMedia[$index]->delete();
             unset($this->repeaterTempMedia[$index]);
         }

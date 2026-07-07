@@ -2,7 +2,7 @@
 
 namespace MountainClans\LivewireSectionBuilder\Livewire;
 
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use MountainClans\LivewireSectionBuilder\Models\BuilderSection;
 
@@ -35,6 +35,9 @@ class FrontendSectionViewer extends Component
             ->whereIn('type', $availableSectionTemplates)
             ->orderBy('order_column')
             ->get()
+            // Headless-секции (без 'frontend' в реестре) Livewire-вьювер пропускает.
+            ->filter(fn (BuilderSection $section) => $section->frontendComponent() !== null)
+            ->values()
             ->all();
     }
 

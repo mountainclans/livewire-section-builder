@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use MountainClans\LivewireSectionBuilder\LivewireSectionBuilderServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Spatie\SchemalessAttributes\SchemalessAttributesServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -22,6 +23,7 @@ class TestCase extends Orchestra
     {
         return [
             LivewireServiceProvider::class,
+            SchemalessAttributesServiceProvider::class,
             LivewireSectionBuilderServiceProvider::class,
         ];
     }

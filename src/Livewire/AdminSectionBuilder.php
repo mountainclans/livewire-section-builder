@@ -2,7 +2,7 @@
 
 namespace MountainClans\LivewireSectionBuilder\Livewire;
 
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use MountainClans\LivewireSectionBuilder\Models\BuilderSection;
@@ -102,7 +102,7 @@ class AdminSectionBuilder extends Component
 
     public function toggleSectionVisibility(string $sectionId): void
     {
-        $section = BuilderSection::query()->withSubclasses()->findOrFail($sectionId);
+        $section = BuilderSection::withSubclasses()->findOrFail($sectionId);
 
         $section->is_visible = ! $section->is_visible;
 
@@ -139,7 +139,7 @@ class AdminSectionBuilder extends Component
 
     public function deleteSection(string $sectionId): void
     {
-        $section = BuilderSection::query()->withSubclasses()->findOrFail($sectionId);
+        $section = BuilderSection::withSubclasses()->findOrFail($sectionId);
 
         $section->delete();
 
