@@ -2,6 +2,10 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.4.0 - 2026-07-07
+
+Add headless mode
+
 ## 1.3.0 - 2026-06-23
 
 Support PHP 8.5 + Laravel 13; add smoke tests
