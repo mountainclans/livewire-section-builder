@@ -2,6 +2,10 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.6.2 - 2026-07-07
+
+Fix livewire-incorrect keys inside the repeater-editor.blade.php
+
 ## 1.6.1 - 2026-07-07
 
 Add new apiSchemas static method to the BuilderSection model
