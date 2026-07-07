@@ -118,11 +118,16 @@ $this->dispatch(AdminSectionBuilder::EVENT_SECTION_UPDATED);
 -  AdminSectionBuilder::EVENT_SECTION_ADDED
 -  AdminSectionBuilder::EVENT_SECTION_UPDATED
 -  AdminSectionBuilder::EVENT_SECTION_SORTED
--  AdminSectionBuilder::EVENT_SECTION_HIDDEN
--  AdminSectionBuilder::EVENT_SECTION_SHOWED
 -  AdminSectionBuilder::EVENT_SECTION_DELETED
 
 И реализовать, к примеру, отправку уведомлений пользователю.
+
+#### Сворачивание секций и репитеров
+
+Карточки секций и элементов репитеров сворачиваются шевроном; состояние живёт
+в localStorage браузера (ключи `sb-collapsed:section:{id}` / `sb-collapsed:repeater:{id}`)
+и переживает перезагрузку страницы. Это чисто UI-состояние конкретного браузера —
+в БД ничего не пишется.
 
 ## View-компонент
 

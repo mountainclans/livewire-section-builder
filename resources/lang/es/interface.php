@@ -9,4 +9,5 @@ return [
     'sections_list_is_empty_yet' => 'Aún no se han agregado secciones',
     'sure_delete_this_section' => '¿Está seguro de que desea eliminar esta sección?',
     'no_section_configured' => 'No existen secciones en la configuración para una página con esta plantilla.',
+    'element_number' => 'Elemento :number (plegado)',
 ];

@@ -25,7 +25,10 @@
                 <div x-sort:item="'{{ $sectionModel->id }}'"
                      wire:key="{{ $sectionModel->type . '-' . $sectionModel->id }}"
                      class="w-full border border-gray-300 dark:border-gray-600 border-2 rounded-lg p-4 mb-6"
+                     x-data="sbCollapsible('sb-collapsed:section:{{ $sectionModel->id }}')"
                 >
+                    @include('livewire-section-builder::components.collapsible-script')
+
                     <div class="flex flex-wrap md:flex-nowrap justify-center md:justify-between gap-3">
                         {{-- Sort handler --}}
                         <div x-sort:handle
@@ -56,43 +59,33 @@
 
                         {{-- Section actions --}}
                         <div class="flex-grow-0 flex items-center gap-3">
-                            {{-- Hide / show section --}}
-                            <button wire:click="toggleSectionVisibility('{{ $sectionModel->id }}')"
+                            {{-- Collapse / expand editor --}}
+                            <button x-on:click="toggle()"
                                     class="w-6 h-6 cursor-pointer"
+                                    type="button"
                             >
-                                @if ($sectionModel->is_visible)
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white"
-                                         aria-hidden="true"
-                                         xmlns="http://www.w3.org/2000/svg"
-                                         width="24"
-                                         height="24"
-                                         fill="none"
-                                         viewBox="0 0 24 24"
-                                    >
-                                        <path stroke="currentColor"
-                                              stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              stroke-width="2"
-                                              d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                        />
-                                    </svg>
-                                @else
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white"
-                                         aria-hidden="true"
-                                         xmlns="http://www.w3.org/2000/svg"
-                                         width="24"
-                                         height="24"
-                                         fill="none"
-                                         viewBox="0 0 24 24"
-                                    >
-                                        <path stroke="currentColor"
-                                              stroke-linecap="round"
-                                              stroke-linejoin="round"
-                                              stroke-width="2"
-                                              d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                        />
-                                    </svg>
-                                @endif
+                                <svg x-show="!collapsed"
+                                     class="w-6 h-6 text-gray-800 dark:text-white"
+                                     aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     width="24"
+                                     height="24"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                >
+                                    <path stroke="currentColor"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="m16 14-4-4-4 4"
+                                    ></path>
+                                </svg>
+                                <svg x-show="collapsed" x-cloak class="w-6 h-6 text-gray-800 dark:text-white"
+                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                     width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                          stroke-width="2" d="m8 10 4 4 4-4"></path>
+                                </svg>
                             </button>
 
                             <button wire:click="deleteSection('{{ $sectionModel->id }}')"
@@ -118,12 +111,12 @@
                         </div>
                     </div>
 
-                    @if ($sectionModel->is_visible && $editorComponent)
+                    <div x-show="!collapsed">
                         <livewire:is :component="$editorComponent"
                                      :section="$sectionModel"
                                      wire:key="{{ $sectionModel->id }}"
                         />
-                    @endif
+                    </div>
                 </div>
             @endforeach
         </div>

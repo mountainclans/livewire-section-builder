@@ -19,7 +19,6 @@ use Spatie\SchemalessAttributes\Casts\SchemalessAttributes;
  * @property string $page_id
  * @property string $type
  * @property int $order_column
- * @property bool $is_visible
  * @property \Spatie\SchemalessAttributes\SchemalessAttributes $fields не путать с импортированным классом каста
  */
 class BuilderSection extends Model
@@ -47,13 +46,11 @@ class BuilderSection extends Model
         'page_id',
         'type',
         'order_column',
-        'is_visible',
         'fields',
     ];
 
     public $casts = [
         'fields' => SchemalessAttributes::class,
-        'is_visible' => 'boolean',
     ];
 
     public static function allowedTypes(): array

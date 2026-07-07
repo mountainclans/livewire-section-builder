@@ -1,0 +1,27 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        // is_visible де-факто работал только как «сворачивание» секции в админке;
+        // с 1.5.0 сворачивание живёт в localStorage, флаг из пакета удалён.
+        // hasColumn — идемпотентность для новых установок (колонки уже нет).
+        if (Schema::hasColumn('builder_sections', 'is_visible')) {
+            Schema::table('builder_sections', function (Blueprint $table) {
+                $table->dropColumn('is_visible');
+            });
+        }
+    }
+
+    public function down(): void
+    {
+        Schema::table('builder_sections', function (Blueprint $table) {
+            $table->boolean('is_visible')->default(true);
+        });
+    }
+};

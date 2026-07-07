@@ -28,7 +28,6 @@ beforeEach(function () {
     $section = new ApiSection([
         'template' => 'test_page',
         'page_id' => 'main',
-        'is_visible' => true,
     ]);
 
     $section->fields->set('title', ['en' => 'Hello', 'ru' => 'Привет']);

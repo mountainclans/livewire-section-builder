@@ -1,13 +1,66 @@
-@use('App\Models\BuilderSectionRepeater')
-
-@php /** @var BuilderSectionRepeater $repeater */ @endphp
+{{-- $repeater — элемент массива WithRepeaters::$repeaters (не модель): id, is_deleted + поля. --}}
+@php /** @var array{id: string, is_deleted: bool} $repeater */ @endphp
 <div @class([
-        'p-4 pr-12 w-full mb-4 relative border border-blue-400 rounded-xl',
+        'p-4 pr-20 w-full mb-4 relative border border-blue-400 rounded-xl',
         'hidden' => $repeater['is_deleted']
     ])
      wire:key="repeater_{{ $index }}"
+     x-data="sbCollapsible('{{ !empty($repeater['id']) ? 'sb-collapsed:repeater:' . $repeater['id'] : '' }}')"
 >
-    {{ $slot }}
+    @include('livewire-section-builder::components.collapsible-script')
+
+    {{-- Свёрнутое состояние: компактная плашка вместо полей --}}
+    <div x-show="collapsed"
+         x-cloak
+         x-on:click="toggle()"
+         class="text-sm text-gray-500 dark:text-gray-400 select-none cursor-pointer py-1"
+    >
+        {{ __('livewire-section-builder::interface.element_number', ['number' => $index + 1]) }}
+    </div>
+
+    <div x-show="!collapsed">
+        {{ $slot }}
+    </div>
+
+    {{-- Кнопка сворачивания --}}
+    <button x-on:click="toggle()"
+            class="absolute right-11 top-3 w-6 h-6 cursor-pointer"
+            type="button"
+    >
+        <svg x-show="!collapsed"
+             class="w-6 h-6 text-gray-800 dark:text-white"
+             aria-hidden="true"
+             xmlns="http://www.w3.org/2000/svg"
+             width="24"
+             height="24"
+             fill="none"
+             viewBox="0 0 24 24"
+        >
+            <path stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m16 14-4-4-4 4"
+            ></path>
+        </svg>
+        <svg x-show="collapsed"
+             x-cloak
+             class="w-6 h-6 text-gray-800 dark:text-white"
+             aria-hidden="true"
+             xmlns="http://www.w3.org/2000/svg"
+             width="24"
+             height="24"
+             fill="none"
+             viewBox="0 0 24 24"
+        >
+            <path stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m8 10 4 4 4-4"
+            ></path>
+        </svg>
+    </button>
 
     {{-- Кнопка удаления --}}
     <button wire:click="deleteRepeater('{{ $repeater['id'] }}')"
@@ -22,4 +75,3 @@
         </svg>
     </button>
 </div>
-

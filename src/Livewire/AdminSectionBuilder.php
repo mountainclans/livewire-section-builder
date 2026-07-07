@@ -15,10 +15,6 @@ class AdminSectionBuilder extends Component
 
     public const EVENT_SECTION_SORTED = 'section_builder_section_sorted';
 
-    public const EVENT_SECTION_HIDDEN = 'section_builder_section_hidden';
-
-    public const EVENT_SECTION_SHOWED = 'section_builder_section_showed';
-
     public const EVENT_SECTION_DELETED = 'section_builder_section_deleted';
 
     public string $template;
@@ -98,23 +94,6 @@ class AdminSectionBuilder extends Component
     public function onSectionUpdate(): void
     {
         $this->setSectionModels();
-    }
-
-    public function toggleSectionVisibility(string $sectionId): void
-    {
-        $section = BuilderSection::withSubclasses()->findOrFail($sectionId);
-
-        $section->is_visible = ! $section->is_visible;
-
-        $section->save();
-
-        $this->setSectionModels();
-
-        if ($section->is_visible) {
-            $this->dispatch(self::EVENT_SECTION_SHOWED);
-        } else {
-            $this->dispatch(self::EVENT_SECTION_HIDDEN);
-        }
     }
 
     public function sortSections(string $sectionId, int $position): void
