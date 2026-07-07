@@ -2,6 +2,10 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.5.2 - 2026-07-07
+
+Styles
+
 ## 1.5.0 - 2026-07-07
 
 The collapsible tabs works through LocalStorage mechanism. Delete is_visible column.
