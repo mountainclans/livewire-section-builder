@@ -170,6 +170,9 @@ trait WithRepeaters
 
             $repeater->section_id = $this->section->id;
             $repeater->type = $this->section::REPEATER_TYPE ?? null;
+            // Порядок элементов = порядок в редакторе; на него полагается
+            // и toApiArray() (сортировка по order_column).
+            $repeater->order_column = $index;
 
             foreach ($fields as $field => $type) {
                 if ($this->isTranslatable($modelClass, "fields->{$field}")) {
