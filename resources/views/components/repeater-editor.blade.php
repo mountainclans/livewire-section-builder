@@ -4,7 +4,11 @@
         'p-4 pr-20 w-full mb-4 relative border border-blue-400 rounded-xl',
         'hidden' => $repeater['is_deleted']
     ])
-     wire:key="repeater_{{ $index }}"
+     {{-- Ключ по id, не по индексу: при сдвиге индексов (добавление/удаление/
+          сохранение) morph не должен переиспользовать узел под другой репитер —
+          Alpine-состояние сворачивания (x-data) инициализируется один раз на узел
+          и при переиспользовании рассинхронизируется с содержимым. --}}
+     wire:key="repeater_{{ !empty($repeater['id']) ? $repeater['id'] : 'new-' . $index }}"
      x-data="sbCollapsible('{{ !empty($repeater['id']) ? 'sb-collapsed:repeater:' . $repeater['id'] : '' }}')"
 >
     @include('livewire-section-builder::components.collapsible-script')
