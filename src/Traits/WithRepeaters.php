@@ -74,6 +74,7 @@ trait WithRepeaters
         $defaults = $this->getRepeaterDefaults();
 
         $this->repeaters = $this->section->repeaters()
+            ->orderBy('order_column')
             ->get()
             ->map(function ($repeater) use ($fields, $modelClass, $defaults) {
                 $data = [
@@ -197,6 +198,25 @@ trait WithRepeaters
         }
 
         $this->setRepeaters();
+    }
+
+    /**
+     * Drag&drop-сортировка (x-sort на контейнере + sortable у admin.repeater-editor):
+     * переставляет элементы массива в памяти — порядок персистится общим
+     * сохранением (saveRepeaters пишет order_column по индексу массива),
+     * поэтому работает и для ещё не сохранённых элементов.
+     */
+    public function sortRepeaters(int $from, int $to): void
+    {
+        if (! isset($this->repeaters[$from])) {
+            return;
+        }
+
+        $items = array_values($this->repeaters);
+        $moved = array_splice($items, $from, 1);
+        array_splice($items, $to, 0, $moved);
+
+        $this->repeaters = $items;
     }
 
     // --- Helpers ---

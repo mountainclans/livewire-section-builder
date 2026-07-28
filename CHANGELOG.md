@@ -2,6 +2,12 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.7.0 - 2026-07-28
+
+- `admin.repeater-editor`: optional `label` (human-readable name in the collapsed bar) and `sortable` (drag&drop handle + `x-sort:item`) props
+- `WithRepeaters::sortRepeaters()` — in-memory reorder for `x-sort`, persisted by the regular section save
+- `setRepeaters()` now loads repeaters ordered by `order_column` (previously insertion order)
+
 ## 1.6.2 - 2026-07-07
 
 Fix livewire-incorrect keys inside the repeater-editor.blade.php

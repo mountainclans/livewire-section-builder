@@ -281,6 +281,17 @@ class AdvantagesOneSectionEditor extends Component
         @endempty
     </div>
 
+Необязательные пропсы `x-admin.repeater-editor`:
+
+- `label` — человекочитаемое имя элемента в свёрнутой плашке («Элемент 2 — Белое вино»).
+  Обычно — значение ключевого поля репитера в дефолтной контент-локали.
+- `sortable` — включает drag&drop-сортировку: у элемента появляются `x-sort:item`
+  и грип-хендл. Список при этом оборачивается в контейнер
+  `<div x-sort="$wire.sortRepeaters($item, $position)">…</div>` (метод даёт `WithRepeaters`).
+  Порядок сохраняется общей кнопкой сохранения секции. Требуется подключённый
+  в admin-бандле приложения плагин [@alpinejs/sort](https://alpinejs.dev/plugins/sort);
+  без него хендл ничего не делает.
+
     <div class="flex justify-between items-center">
         <button wire:click="addRepeater"
                 type="button"
