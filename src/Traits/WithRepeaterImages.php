@@ -330,6 +330,25 @@ trait WithRepeaterImages
     }
 
     /**
+     * Вызывается при перетаскивании репитера
+     * Публичный метод для использования в WithRepeaters
+     *
+     * Состояние картинок разложено по пяти параллельным массивам, и все они
+     * индексируются позицией карточки в редакторе — значит, едут вместе с ней.
+     * Порядок картинок внутри галереи это не трогает (см. sortRepeaterImages).
+     *
+     * @param  array<int, int>  $map  старый индекс => новый
+     */
+    public function moveRepeaterImages(array $map): void
+    {
+        $this->repeaterTempMedia = $this->applyRepeaterIndexMap($this->repeaterTempMedia, $map);
+        $this->repeaterImages = $this->applyRepeaterIndexMap($this->repeaterImages, $map);
+        $this->repeaterImageIdsForOrdering = $this->applyRepeaterIndexMap($this->repeaterImageIdsForOrdering, $map);
+        $this->repeaterImageIdsForDelete = $this->applyRepeaterIndexMap($this->repeaterImageIdsForDelete, $map);
+        $this->uploadedRepeaterImages = $this->applyRepeaterIndexMap($this->uploadedRepeaterImages, $map);
+    }
+
+    /**
      * Вызывается при удалении репитера
      * Публичный метод для использования в WithRepeaters
      */

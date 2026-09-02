@@ -2,6 +2,11 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.7.1 - 2026-09-02
+
+- `WithRepeaters::sortRepeaters()` now moves the parallel image state of `WithRepeaterImages` along with the card (new `moveRepeaterImages()` hook). Dragging a repeater used to leave the neighbour's gallery in place, and a pending upload or deletion was saved to the wrong repeater
+- Reorder keeps gaps in the sparse `repeaterImageIdsForDelete` / `uploadedRepeaterImages` arrays instead of re-indexing them
+
 ## 1.7.0 - 2026-07-28
 
 - `admin.repeater-editor`: optional `label` (human-readable name in the collapsed bar) and `sortable` (drag&drop handle + `x-sort:item`) props

@@ -16,6 +16,7 @@ use MountainClans\LivewireSectionBuilder\Models\BuilderSectionRepeater;
  * @method void info(string $message) Toastable-нотификация приложения
  * @method void initRepeaterImages(int $index) WithRepeaterImages
  * @method void cleanupRepeaterImages(int $index) WithRepeaterImages
+ * @method void moveRepeaterImages(array<int, int> $map) WithRepeaterImages
  * @method void persistRepeaterImages() WithRepeaterImages
  */
 trait WithRepeaters
@@ -212,11 +213,52 @@ trait WithRepeaters
             return;
         }
 
-        $items = array_values($this->repeaters);
-        $moved = array_splice($items, $from, 1);
-        array_splice($items, $to, 0, $moved);
+        $map = $this->repeaterIndexMap($from, $to, count($this->repeaters));
 
-        $this->repeaters = $items;
+        $this->repeaters = $this->applyRepeaterIndexMap($this->repeaters, $map);
+
+        // Состояние картинок лежит в параллельных массивах с теми же индексами —
+        // без переноса карточка показала бы галерею соседа, а сохранение
+        // отправило бы загрузки и удаления не тому репитеру.
+        if (method_exists($this, 'moveRepeaterImages')) {
+            $this->moveRepeaterImages($map);
+        }
+    }
+
+    /**
+     * Карта «старый индекс => новый» для перетаскивания $from на место $to.
+     *
+     * @return array<int, int>
+     */
+    protected function repeaterIndexMap(int $from, int $to, int $length): array
+    {
+        $order = range(0, $length - 1);
+        $moved = array_splice($order, $from, 1);
+        array_splice($order, $to, 0, $moved);
+
+        return array_flip($order);
+    }
+
+    /**
+     * Раскладывает массив по новым индексам. Ключи не пересобираются подряд:
+     * часть параллельных массивов картинок разрежена (заполняется только для
+     * тронутых карточек), и array_values сдвинул бы их не туда.
+     *
+     * @param  array<int, mixed>  $items
+     * @param  array<int, int>  $map
+     * @return array<int, mixed>
+     */
+    protected function applyRepeaterIndexMap(array $items, array $map): array
+    {
+        $result = [];
+
+        foreach ($items as $index => $value) {
+            $result[$map[$index] ?? $index] = $value;
+        }
+
+        ksort($result);
+
+        return $result;
     }
 
     // --- Helpers ---
