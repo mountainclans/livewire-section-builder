@@ -37,7 +37,7 @@
                         <div x-sort:handle
                              class="flex items-center"
                         >
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white flex-shrink-0 cursor-grab"
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white shrink-0 cursor-grab"
                                  aria-hidden="true"
                                  xmlns="http://www.w3.org/2000/svg"
                                  width="24"
@@ -56,12 +56,12 @@
 
                         {{-- Section title --}}
                         <div
-                            class="p-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400 flex-grow">
+                            class="p-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-700 dark:text-blue-400 grow">
                             {{ $sectionModel->sectionTitle() }}
                         </div>
 
                         {{-- Section actions --}}
-                        <div class="flex-grow-0 flex items-center gap-3">
+                        <div class="grow-0 flex items-center gap-3">
                             {{-- Collapse / expand editor --}}
                             <button x-on:click="toggle()"
                                     class="w-6 h-6 cursor-pointer"
