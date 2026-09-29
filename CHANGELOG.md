@@ -2,6 +2,10 @@
 
 All notable changes to `livewire-section-builder` will be documented in this file.
 
+## 1.8.0 - 2026-09-29
+
+Support Livewire 4; replace utilities removed in Tailwind 4
+
 ## 1.7.1 - 2026-09-02
 
 - `WithRepeaters::sortRepeaters()` now moves the parallel image state of `WithRepeaterImages` along with the card (new `moveRepeaterImages()` hook). Dragging a repeater used to leave the neighbour's gallery in place, and a pending upload or deletion was saved to the wrong repeater
